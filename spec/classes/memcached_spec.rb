@@ -142,7 +142,9 @@ describe 'memcached' do
             end
           }
 
-          it { should contain_file("/etc/memcached.conf").with(
+          it { should contain_memcached__instance("memcached") }
+
+          it { should contain_file("/etc/memcached_11211.conf").with(
             'owner'   => 'root',
             'group'   => 'root'
           )}
@@ -167,7 +169,7 @@ describe 'memcached' do
             content = param_value(
               subject,
               'file',
-              '/etc/memcached.conf',
+              '/etc/memcached_11211.conf',
               'content'
             )
             expected_lines = [
