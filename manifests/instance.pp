@@ -22,6 +22,7 @@ define memcached::instance (
   $large_mem_pages  = false,
   $service_ensure   = 'running',
   $service_enable   = true,
+  $single_instance  = false,
 ) {
 
   include ::memcached::params
@@ -64,20 +65,29 @@ define memcached::instance (
     }
   }
 
-  case $::osfamily {
-    'Debian': {
-      $config_file  = "/etc/memcached_${tcp_port}.conf"
-      $service_name = 'memcached'
-      # We don't manage the init script for Debian
-    }
-    'Windows': {
-      $config_file = undef
-      $service_name = 'memcached'
-    }
-    default: {
-      $config_file  = "/etc/sysconfig/memcached_${tcp_port}"
-      $service_name = "memcached_${tcp_port}"
-      $init_script  = "/etc/init.d/memcached_${tcp_port}"
+  if $single_instance {
+    $config_file = $::memcached::params::config_file
+    $service_name = $::memcached::params::service_name
+    $init_script = undef
+  } else {
+    case $::osfamily {
+      'Debian': {
+        $config_file  = "/etc/memcached_${tcp_port}.conf"
+        $service_name = 'memcached'
+        # We don't manage the init script for Debian
+        $init_script  = undef
+      }
+      'Windows': {
+        $config_file = undef
+        $service_name = 'memcached'
+        # We don't manage the init script for Windows
+        $init_script  = undef
+      }
+      default: {
+        $config_file  = "/etc/sysconfig/memcached_${tcp_port}"
+        $service_name = "memcached_${tcp_port}"
+        $init_script  = "/etc/init.d/memcached_${tcp_port}"
+      }
     }
   }
 
@@ -98,7 +108,7 @@ define memcached::instance (
     }
   }
 
-  if $::osfamily != 'Debian' {
+  if $init_script {
     file { $init_script:
       owner   => 'root',
       group   => 'root',

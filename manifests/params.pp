@@ -5,8 +5,10 @@ class memcached::params {
     'Debian': {
       $package_name      = 'memcached'
       $package_provider  = undef
+      $service_name      = 'memcached'
       $service_hasstatus = false
       $dev_package_name  = 'libmemcached-dev'
+      $config_file       = '/etc/memcached.conf'
       $config_tmpl       = "${module_name}/memcached.conf.erb"
       $user              = 'nobody'
       $use_registry      = false
@@ -14,8 +16,10 @@ class memcached::params {
     /RedHat|Suse/: {
       $package_name      = 'memcached'
       $package_provider  = undef
+      $service_name      = 'memcached'
       $service_hasstatus = true
       $dev_package_name  = 'libmemcached-devel'
+      $config_file       = '/etc/sysconfig/memcached'
       $config_tmpl       = "${module_name}/memcached_sysconfig.erb"
       $init_tmpl         = "${module_name}/memcached.init.erb"
       $user              = 'memcached'
@@ -24,6 +28,7 @@ class memcached::params {
     /windows/: {
       $package_name      = 'memcached'
       $package_provider  = 'chocolatey'
+      $service_name      = 'memcached'
       $service_hasstatus = true
       $dev_package_name  = 'libmemcached-devel'
       $config_file       = undef
@@ -37,8 +42,10 @@ class memcached::params {
         'Amazon': {
           $package_name      = 'memcached'
           $package_provider  = undef
+          $service_name      = 'memcached'
           $service_hasstatus = true
           $dev_package_name  = 'libmemcached-devel'
+          $config_file       = '/etc/sysconfig/memcached'
           $config_tmpl       = "${module_name}/memcached_sysconfig.erb"
           $init_tmpl         = "${module_name}/memcached.init.erb"
           $user              = 'memcached'
